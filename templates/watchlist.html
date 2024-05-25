@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Watchlist{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Watchlist</h1>
+    <ul class="list-group">
+        {% for movie in movies %}
+        <li class="list-group-item">
+            <a href="{{ url_for('movie_details', movie_id=movie.id) }}">{{ movie.title }} ({{ movie.release_date }})</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="/" class="btn btn-primary mt-3">Torna alla ricerca</a>
+</div>
+{% endblock %}

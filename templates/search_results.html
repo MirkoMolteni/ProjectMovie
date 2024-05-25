@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Risultati della ricerca
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="mt-4">Risultati Ricerca</h1>
+    {% for movie in movies %}
+      <div class="card my-4">
+        <div class="card-body">
+          <a href="/movie/{{ movie.id }}"><h2>{{ movie.title }}</h2></a>
+          <p>{{ movie.overview }}</p>
+          <p>Data pubblicazione: {{ movie.release_date }}</p>
+          <p>Voto medio: {{ movie.vote_average }}</p>
+        </div>
+      </div>
+    {% endfor %}
+    <a href="/" class="btn btn-primary">Torna indietro</a>
+  </div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {{ movie.title }}
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1>{{ movie.title }}</h1>
+    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="img-fluid" />
+    <p>
+      <strong>Titolo Originale:</strong> {{ movie.original_title }}
+    </p>
+    <p>
+      <strong>Descrizione:</strong> {{ movie.overview }}
+    </p>
+    <p>
+      <strong>Data di uscita:</strong> {{ movie.release_date }}
+    </p>
+    <p>
+      <strong>Valutazione:</strong> {{ movie.vote_average }} / 10
+    </p>
+    <p>
+      <strong>Numero di voti:</strong> {{ movie.vote_count }}
+    </p>
+    <p>
+      <strong>Lingua Originale:</strong> {{ movie.original_language }}
+    </p>
+    <p>
+      <strong>Generi:</strong>
+    </p>
+    <ul>
+      {% for genre in movie.genres %}
+        <li>{{ genre.name }}</li>
+      {% endfor %}
+    </ul>
+    <p>
+      <strong>Produttori:</strong>
+    </p>
+    <ul>
+      {% for company in movie.production_companies %}
+        <li>{{ company.name }}</li>
+      {% endfor %}
+    </ul>
+    <p>
+      <strong>Paesi di Produzione:</strong>
+    </p>
+    <ul>
+      {% for country in movie.production_countries %}
+        <li>{{ country.name }}</li>
+      {% endfor %}
+    </ul>
+    <div class="mt-4">
+      <form action="{{ url_for('add_to_watchlist', movie_id=movie.id) }}" method="post">
+        <button type="submit" class="btn btn-primary">Aggiungi alla Watchlist</button>
+      </form>
+    </div>
+    <a href="/" class="btn btn-primary">Torna alla ricerca</a>
+  </div>
+{% endblock %}
