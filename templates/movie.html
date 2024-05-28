@@ -51,7 +51,9 @@
       {% endfor %}
     </ul>
     <div class="mt-4">
-      <form action="{{ url_for('add_to_watchlist', movie_id=movie.id) }}" method="post">
+      <form action="/add_to_watchlist" method="post">
+        <input type="hidden" name="movie_id" value="{{ movie.id }}">
+        <input type="hidden" name="movie_name" value="{{ movie.title }}">
         <button type="submit" class="btn btn-primary">Aggiungi alla Watchlist</button>
       </form>
     </div>

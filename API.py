@@ -64,18 +64,6 @@ def movie(movie_id):
     data = response.json()
     return render_template('movie.html', movie=data)
 
-@app.route('/add_to_watchlist/<int:movie_id>', methods=['POST'])
-def add_to_watchlist(movie_id):
-    # guest_session_id = session.get('guest_session_id')
-    # url = f'https://api.themoviedb.org/3/movie/{movie_id}/rating?api_key={TMDBKey}&guest_session_id={guest_session_id}'
-    # rating = request.form['rating']
-    # payload = {
-    #     'value': rating
-    # }
-    # response = requests.post(url, json=payload)
-    # return redirect(url_for('watchlist'))
-    print('ciao')
-
 @app.route('/watchlist')
 def watchlist():
     # guest_session_id = session.get('guest_session_id')
@@ -84,7 +72,24 @@ def watchlist():
     # data = response.json()
     # watchlist_movies = data['results']
     # return render_template('watchlist.html', movies=watchlist_movies)
-    print('ciao')
+    result = db.get_watchlist(session['user_id'])
+    return render_template('watchlist.html', movies=result)
+
+@app.route('/add_to_watchlist', methods=['POST'])
+def add_to_watchlist():
+    # guest_session_id = session.get('guest_session_id')
+    # url = f'https://api.themoviedb.org/3/movie/{movie_id}/rating?api_key={TMDBKey}&guest_session_id={guest_session_id}'
+    # rating = request.form['rating']
+    # payload = {
+    #     'value': rating
+    # }
+    # response = requests.post(url, json=payload)
+    # return redirect(url_for('watchlist'))
+    movie_id = request.form['movie_id']
+    movie_name = request.form['movie_name']
+    db.add_to_watchlist(session['user_id'], movie_id, movie_name)
+    return redirect('/watchlist')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

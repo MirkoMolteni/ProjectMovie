@@ -28,3 +28,16 @@ class DBManager:
         cursor.execute("INSERT INTO utenti (Username, Password) VALUES (%s, MD5(%s))", (username, password))
         self.conn.commit()
         cursor.close()
+        
+    def get_watchlist(self, user_id):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM watchlist WHERE IDUtente=%s", (user_id,))
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+    
+    def add_to_watchlist(self, user_id, movie_id, movie_name):
+        cursor = self.conn.cursor()
+        cursor.execute("INSERT INTO watchlist (IDUtente, IDFilm, NomeFilm) VALUES (%s, %s, %s)", (user_id, movie_id, movie_name))
+        self.conn.commit()
+        cursor.close()
