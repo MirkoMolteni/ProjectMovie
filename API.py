@@ -1,25 +1,53 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import requests
-from key import TMDBKey
-from key import FlaskKey
+from key import TMDBKey, TMDBReadAccessToken, FlaskKey
+from DBManager import DBManager
 
 app = Flask(__name__)
 app.secret_key = FlaskKey
+db = DBManager()   
 
 
 @app.route('/')
-def landing():
-    if 'guest_session_id' not in session:
-        url = f'https://api.themoviedb.org/3/authentication/guest_session/new?api_key={TMDBKey}'
-        response = requests.get(url)
-        data = response.json()
-        session['guest_session_id'] = data['guest_session_id']
-    
+def landing():  
     url = f'https://api.themoviedb.org/3/movie/popular?api_key={TMDBKey}&language=it-IT'
     response = requests.get(url)
     data = response.json()
     popular_movies = data['results']
     return render_template('index.html', popular_movies=popular_movies)
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/chkLogin', methods=['POST'])
+def chkLogin():
+    username = request.form['username']
+    password = request.form['password']
+    result = db.check_login(username, password)
+    if result:
+        session['user_id'] = result[0]
+        return redirect('/')
+    return redirect('/login')
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
+@app.route('/chkRegister', methods=['POST'])
+def chkRegister():
+    username = request.form['username']
+    password = request.form['password']
+    result = db.check_register(username)
+    if result:
+        return redirect('/register')
+    db.register_user(username, password)
+    return redirect('/login')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -38,30 +66,25 @@ def movie(movie_id):
 
 @app.route('/add_to_watchlist/<int:movie_id>', methods=['POST'])
 def add_to_watchlist(movie_id):
-    guest_session_id = session.get('guest_session_id')
-    url = f'https://api.themoviedb.org/3/guest_session/{guest_session_id}/watchlist?api_key={TMDBKey}&language=it-IT'
-    payload = {
-        "media_type": "movie",
-        "media_id": movie_id,
-        "watchlist": True
-    }
-    headers = {
-        "Content-Type": "application/json;charset=utf-8"
-    }
-    response = requests.post(url, json=payload, headers=headers)
-    if response.status_code == 201:
-        return redirect(url_for('movie_details', movie_id=movie_id))
-    else:
-        return "Errore nell'aggiunta alla watchlist", 400
+    # guest_session_id = session.get('guest_session_id')
+    # url = f'https://api.themoviedb.org/3/movie/{movie_id}/rating?api_key={TMDBKey}&guest_session_id={guest_session_id}'
+    # rating = request.form['rating']
+    # payload = {
+    #     'value': rating
+    # }
+    # response = requests.post(url, json=payload)
+    # return redirect(url_for('watchlist'))
+    print('ciao')
 
 @app.route('/watchlist')
 def watchlist():
-    guest_session_id = session.get('guest_session_id')
-    url = f'https://api.themoviedb.org/3/guest_session/{guest_session_id}/rated/movies?api_key={TMDBKey}&language=it-IT'
-    response = requests.get(url)
-    data = response.json()
-    watchlist_movies = data['results']
-    return render_template('watchlist.html', movies=watchlist_movies)
+    # guest_session_id = session.get('guest_session_id')
+    # url = f'https://api.themoviedb.org/3/guest_session/{guest_session_id}/rated/movies?api_key={TMDBKey}&language=it-IT'
+    # response = requests.get(url)
+    # data = response.json()
+    # watchlist_movies = data['results']
+    # return render_template('watchlist.html', movies=watchlist_movies)
+    print('ciao')
 
 if __name__ == '__main__':
     app.run(debug=True)
