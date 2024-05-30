@@ -90,6 +90,10 @@ def add_to_watchlist():
     db.add_to_watchlist(session['user_id'], movie_id, movie_name)
     return redirect('/watchlist')
 
+@app.route('/remove_from_watchlist/<int:movie_id>')
+def remove_from_watchlist(movie_id):
+    db.remove_from_watchlist(session['user_id'], movie_id)
+    return redirect('/watchlist')
 
 if __name__ == '__main__':
     app.run(debug=True)

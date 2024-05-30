@@ -9,6 +9,7 @@
             {% for movie in movies %}
                 <li class="list-group-item">
                     <a href="/movie/{{ movie.1 }}">{{ movie.2 }}</a>
+                    <a href="/remove_from_watchlist/{{ movie.1 }}" class="btn btn-danger btn-sm float-right">Rimuovi</a>
                 </li>
             {% endfor %}
         </ul>
