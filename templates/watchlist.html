@@ -1,17 +1,24 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}Watchlist{% endblock %}
+{% block title %}
+  Watchlist
+{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1>Watchlist</h1>
-        <ul class="list-group">
-            {% for movie in movies %}
-                <li class="list-group-item">
-                    <a href="/movie/{{ movie.1 }}">{{ movie.2 }}</a>
-                    <a href="/remove_from_watchlist/{{ movie.1 }}" class="btn btn-danger btn-sm float-right">Rimuovi</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+  <div class="container">
+    <h1>Watchlist</h1>
+    {% if filtro == 0 %}
+        <h3>Sezione: Nessuno</h3>
+    {% else %}
+        <h3>Sezione: {{ tipi[filtro - 1][1] }}</h3>
+    {% endif %}
+    <ul class="list-group">
+      {% for movie in movies %}
+      <li class="list-group-item">
+          <a href="/movie/{{ movie[2] }}">{{ movie[4] }}</a>
+          <a href="/remove_from_watchlist/{{ movie[2] }}" class="btn btn-danger btn-sm float-right">Rimuovi</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock %}

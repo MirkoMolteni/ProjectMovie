@@ -9,7 +9,7 @@
     <h1>{{ movie.title }}</h1>
     <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="img-fluid" />
     <p>
-      <strong>Titolo Originale:</strong> {{ movie.original_title }}
+      <strong>Titolo originale:</strong> {{ movie.original_title }}
     </p>
     <p>
       <strong>Descrizione:</strong> {{ movie.overview }}
@@ -24,7 +24,7 @@
       <strong>Numero di voti:</strong> {{ movie.vote_count }}
     </p>
     <p>
-      <strong>Lingua Originale:</strong> {{ movie.original_language }}
+      <strong>Lingua originale:</strong> {{ movie.original_language }}
     </p>
     <p>
       <strong>Generi:</strong>
@@ -50,13 +50,22 @@
         <li>{{ country.name }}</li>
       {% endfor %}
     </ul>
-    <div class="mt-4">
+    <div class="mt-4" style="border: 1px solid black; border-radius: 5px;">
       <form action="/add_to_watchlist" method="post">
-        <input type="hidden" name="movie_id" value="{{ movie.id }}">
-        <input type="hidden" name="movie_name" value="{{ movie.title }}">
-        <button type="submit" class="btn btn-primary">Aggiungi alla Watchlist</button>
+      <input type="hidden" name="movie_id" value="{{ movie.id }}">
+      <input type="hidden" name="movie_name" value="{{ movie.title }}">
+
+      <div class="form-group">
+      <label for="tipoWatchlist">Sezione della watchlist:</label>
+      <select name="watchlist_type" id="tipoWatchlist" class="form-control">
+      {% for tipo in tipi %}
+      <option value="{{ tipo.0 }}">{{ tipo.1 }}</option>
+      {% endfor %}
+      </select>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Aggiungi alla Watchlist</button>
       </form>
     </div>
-    <a href="/" class="btn btn-primary">Torna alla ricerca</a>
   </div>
 {% endblock %}

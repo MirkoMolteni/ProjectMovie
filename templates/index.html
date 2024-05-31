@@ -15,12 +15,19 @@
     </form>
 
     <h2>Film più popolari</h2>
-    <ul class="list-group">
+    <div class="row">
       {% for movie in popular_movies %}
-        <li class="list-group-item">
-          <a href="/movie/{{ movie.id }}">{{ movie.title }} ({{ movie.release_date }})</a>
-        </li>
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="{{ movie.title }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ movie.title }}</h5>
+              <p class="card-text">{{ movie.release_date }}</p>
+              <a href="/movie/{{ movie.id }}" class="btn btn-primary">Vedi dettagli</a>
+            </div>
+          </div>
+        </div>
       {% endfor %}
-    </ul>
+    </div>
   </div>
 {% endblock %}

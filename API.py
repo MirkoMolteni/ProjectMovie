@@ -5,20 +5,24 @@ from DBManager import DBManager
 
 app = Flask(__name__)
 app.secret_key = FlaskKey
-db = DBManager()   
+db = DBManager()
 
 
 @app.route('/')
-def landing():  
-    url = f'https://api.themoviedb.org/3/movie/popular?api_key={TMDBKey}&language=it-IT'
+def landing():
+    url = f'https://api.themoviedb.org/3/movie/popular?api_key={
+        TMDBKey}&language=it-IT'
     response = requests.get(url)
     data = response.json()
     popular_movies = data['results']
+    session["watchlist_filter"] = 0
     return render_template('index.html', popular_movies=popular_movies)
+
 
 @app.route('/login')
 def login():
     return render_template('login.html')
+
 
 @app.route('/chkLogin', methods=['POST'])
 def chkLogin():
@@ -30,9 +34,11 @@ def chkLogin():
         return redirect('/')
     return redirect('/login')
 
+
 @app.route('/register')
 def register():
     return render_template('register.html')
+
 
 @app.route('/chkRegister', methods=['POST'])
 def chkRegister():
@@ -44,25 +50,32 @@ def chkRegister():
     db.register_user(username, password)
     return redirect('/login')
 
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect('/')
 
+
 @app.route('/search', methods=['GET'])
 def search():
     query = request.args.get('query')
-    url = f'https://api.themoviedb.org/3/search/movie?api_key={TMDBKey}&query={query}&language=it-IT'
+    url = f'https://api.themoviedb.org/3/search/movie?api_key={
+        TMDBKey}&query={query}&language=it-IT'
     response = requests.get(url)
     data = response.json()
     return render_template('search_results.html', movies=data['results'])
 
+
 @app.route('/movie/<int:movie_id>')
 def movie(movie_id):
-    url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={TMDBKey}&language=it-IT'
+    url = f'https://api.themoviedb.org/3/movie/{
+        movie_id}?api_key={TMDBKey}&language=it-IT'
     response = requests.get(url)
-    data = response.json()
-    return render_template('movie.html', movie=data)
+    infoMovie = response.json()
+    tipi = db.get_tipi()
+    return render_template('movie.html', movie=infoMovie, tipi=tipi)
+
 
 @app.route('/watchlist')
 def watchlist():
@@ -72,8 +85,10 @@ def watchlist():
     # data = response.json()
     # watchlist_movies = data['results']
     # return render_template('watchlist.html', movies=watchlist_movies)
-    result = db.get_watchlist(session['user_id'])
-    return render_template('watchlist.html', movies=result)
+    watchlist = db.get_watchlist(session['user_id'], session['watchlist_filter'])
+    tipi = db.get_tipi()
+    return render_template('watchlist.html', movies=watchlist, tipi=tipi, filtro=session["watchlist_filter"])
+
 
 @app.route('/add_to_watchlist', methods=['POST'])
 def add_to_watchlist():
@@ -87,13 +102,18 @@ def add_to_watchlist():
     # return redirect(url_for('watchlist'))
     movie_id = request.form['movie_id']
     movie_name = request.form['movie_name']
-    db.add_to_watchlist(session['user_id'], movie_id, movie_name)
+    watchlist_type = request.form['watchlist_type']
+    db.add_to_watchlist(session['user_id'], movie_id,
+                        movie_name, watchlist_type)
+    session["watchlist_filter"] = 0
     return redirect('/watchlist')
+
 
 @app.route('/remove_from_watchlist/<int:movie_id>')
 def remove_from_watchlist(movie_id):
     db.remove_from_watchlist(session['user_id'], movie_id)
     return redirect('/watchlist')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
