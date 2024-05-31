@@ -87,7 +87,8 @@ def watchlist():
     # return render_template('watchlist.html', movies=watchlist_movies)
     watchlist = db.get_watchlist(session['user_id'], session['watchlist_filter'])
     tipi = db.get_tipi()
-    return render_template('watchlist.html', movies=watchlist, tipi=tipi, filtro=session["watchlist_filter"])
+    filtro = session["watchlist_filter"]
+    return render_template('watchlist.html', movies=watchlist, tipi=tipi, filtro=filtro)
 
 
 @app.route('/add_to_watchlist', methods=['POST'])
@@ -112,8 +113,15 @@ def add_to_watchlist():
 @app.route('/remove_from_watchlist/<int:movie_id>')
 def remove_from_watchlist(movie_id):
     db.remove_from_watchlist(session['user_id'], movie_id)
+    session["watchlist_filter"] = 0
     return redirect('/watchlist')
 
+
+@app.route("/change_watchlist_type", methods=['POST'])
+def change_Watchlist_type():
+    watchlist_type = request.form['watchlist_type']
+    session['watchlist_filter'] = int(watchlist_type)
+    return redirect("/watchlist")
 
 if __name__ == '__main__':
     app.run(debug=True)

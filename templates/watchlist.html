@@ -7,14 +7,27 @@
 {% block content %}
   <div class="container">
     <h1>Watchlist</h1>
+    <div class="mt-4" style="border: 1px solid black; border-radius: 5px;">
+      <form action="/change_watchlist_type" method="post">
+        <div class="form-group">
+          <label for="tipoWatchlist">Tipo:</label>
+          <select name="watchlist_type" id="tipoWatchlist" class="form-control">
+            {% for tipo in tipi %}
+              <option value="{{ tipo[0] }}">{{ tipo[1] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Cambia</button>
+      </form>
+    </div>
     {% if filtro == 0 %}
-        <h3>Sezione: Nessuno</h3>
+      <h3>Sezione: Nessuno</h3>
     {% else %}
-        <h3>Sezione: {{ tipi[filtro - 1][1] }}</h3>
+      <h3>Sezione: {{ tipi[filtro - 1][1] }}</h3>
     {% endif %}
     <ul class="list-group">
       {% for movie in movies %}
-      <li class="list-group-item">
+        <li class="list-group-item">
           <a href="/movie/{{ movie[2] }}">{{ movie[4] }}</a>
           <a href="/remove_from_watchlist/{{ movie[2] }}" class="btn btn-danger btn-sm float-right">Rimuovi</a>
         </li>
