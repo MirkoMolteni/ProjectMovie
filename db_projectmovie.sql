@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mag 28, 2024 alle 09:56
+-- Creato il: Giu 04, 2024 alle 08:09
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -24,6 +24,27 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `tipi`
+--
+
+CREATE TABLE `tipi` (
+  `ID` int(11) NOT NULL,
+  `Nome` varchar(32) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `tipi`
+--
+
+INSERT INTO `tipi` (`ID`, `Nome`) VALUES
+(1, 'Sto guardando'),
+(2, 'Completato'),
+(3, 'Da vedere'),
+(4, 'Droppato');
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `utenti`
 --
 
@@ -38,7 +59,8 @@ CREATE TABLE `utenti` (
 --
 
 INSERT INTO `utenti` (`ID`, `Username`, `Password`) VALUES
-(1, 'test', '098f6bcd4621d373cade4e832627b4f6');
+(1, 'test', '098f6bcd4621d373cade4e832627b4f6'),
+(2, 'Frittella12', '7e82b9af1f886f4fb7d8881f2c6416e3');
 
 -- --------------------------------------------------------
 
@@ -47,8 +69,10 @@ INSERT INTO `utenti` (`ID`, `Username`, `Password`) VALUES
 --
 
 CREATE TABLE `watchlist` (
+  `ID` int(11) NOT NULL,
   `IDUtente` int(11) NOT NULL,
   `IDFilm` int(11) NOT NULL,
+  `IDTipo` int(11) NOT NULL DEFAULT 3,
   `NomeFilm` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -56,12 +80,22 @@ CREATE TABLE `watchlist` (
 -- Dump dei dati per la tabella `watchlist`
 --
 
-INSERT INTO `watchlist` (`IDUtente`, `IDFilm`, `NomeFilm`) VALUES
-(1, 823464, 'Godzilla e Kong - Il nuovo impero');
+INSERT INTO `watchlist` (`ID`, `IDUtente`, `IDFilm`, `IDTipo`, `NomeFilm`) VALUES
+(1, 1, 235044, 3, 'Un fantasma per amico'),
+(2, 1, 929590, 2, 'Civil War'),
+(3, 1, 693134, 2, 'Dune - Parte due'),
+(4, 2, 385687, 3, 'Fast X'),
+(5, 2, 653346, 2, 'Il regno del pianeta delle scimmie');
 
 --
 -- Indici per le tabelle scaricate
 --
+
+--
+-- Indici per le tabelle `tipi`
+--
+ALTER TABLE `tipi`
+  ADD PRIMARY KEY (`ID`);
 
 --
 -- Indici per le tabelle `utenti`
@@ -73,17 +107,31 @@ ALTER TABLE `utenti`
 -- Indici per le tabelle `watchlist`
 --
 ALTER TABLE `watchlist`
-  ADD PRIMARY KEY (`IDUtente`,`IDFilm`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `FK1_watch` (`IDTipo`),
+  ADD KEY `FK2_watch` (`IDUtente`);
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate
 --
 
 --
+-- AUTO_INCREMENT per la tabella `tipi`
+--
+ALTER TABLE `tipi`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT per la tabella `utenti`
 --
 ALTER TABLE `utenti`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT per la tabella `watchlist`
+--
+ALTER TABLE `watchlist`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Limiti per le tabelle scaricate
@@ -93,7 +141,8 @@ ALTER TABLE `utenti`
 -- Limiti per la tabella `watchlist`
 --
 ALTER TABLE `watchlist`
-  ADD CONSTRAINT `FK1_watch` FOREIGN KEY (`IDUtente`) REFERENCES `utenti` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK1_watch` FOREIGN KEY (`IDTipo`) REFERENCES `tipi` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK2_watch` FOREIGN KEY (`IDUtente`) REFERENCES `utenti` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
